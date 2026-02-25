@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeadHarvest Pro — Settings</title>
+    <link rel="stylesheet" href="options.css">
+</head>
+
+<body>
+    <div class="page-wrap">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <img src="../icons/icon48.png" alt="icon" class="brand-icon">
+                <div>
+                    <div class="brand-name">LeadHarvest <span class="accent">Pro</span></div>
+                    <div class="brand-sub">Settings</div>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <a class="nav-item active" data-section="api-keys">🔑 API Keys</a>
+                <a class="nav-item" data-section="anti-detect">🛡 Anti-Detection</a>
+                <a class="nav-item" data-section="team">👥 Team & Workspace</a>
+                <a class="nav-item" data-section="privacy">🔒 Privacy & GDPR</a>
+                <a class="nav-item" data-section="about">ℹ About</a>
+            </nav>
+        </aside>
+
+        <!-- Content -->
+        <main class="content">
+            <div id="toast" class="toast hidden">Saved!</div>
+
+            <!-- API Keys -->
+            <section class="settings-section active" id="section-api-keys">
+                <h2>API Keys</h2>
+                <p class="section-desc">API keys are stored locally on your device and never sent to our servers.</p>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="service-icon">🔍</span>
+                        <div><strong>Hunter.io</strong>
+                            <p class="service-desc">Email verification & finder</p>
+                        </div>
+                        <a href="https://hunter.io" target="_blank" class="ext-link">Get key ↗</a>
+                    </div>
+                    <div class="field-group">
+                        <label>API Key</label>
+                        <div class="key-input-row">
+                            <input type="password" id="hunterApiKey" class="key-input" placeholder="••••••••••••••••">
+                            <button class="show-btn" data-target="hunterApiKey">👁</button>
+                        </div>
+                        <div class="status-row" id="hunter-status"></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="service-icon">🏢</span>
+                        <div><strong>Clearbit</strong>
+                            <p class="service-desc">Company profile enrichment</p>
+                        </div>
+                        <a href="https://clearbit.com" target="_blank" class="ext-link">Get key ↗</a>
+                    </div>
+                    <div class="field-group">
+                        <label>API Key</label>
+                        <div class="key-input-row">
+                            <input type="password" id="clearbitApiKey" class="key-input" placeholder="••••••••••••••••">
+                            <button class="show-btn" data-target="clearbitApiKey">👁</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="service-icon">🟠</span>
+                        <div><strong>HubSpot</strong>
+                            <p class="service-desc">CRM contact push</p>
+                        </div>
+                        <a href="https://app.hubspot.com/api-key" target="_blank" class="ext-link">Get key ↗</a>
+                    </div>
+                    <div class="field-group">
+                        <label>Private App Token</label>
+                        <div class="key-input-row">
+                            <input type="password" id="hubspotApiKey" class="key-input" placeholder="pat-na1-••••••••">
+                            <button class="show-btn" data-target="hubspotApiKey">👁</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="service-icon">☁️</span>
+                        <div><strong>Salesforce</strong>
+                            <p class="service-desc">CRM lead push</p>
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <label>Instance URL</label>
+                        <input type="text" id="salesforceInstanceUrl" class="text-input"
+                            placeholder="https://yourorg.salesforce.com">
+                    </div>
+                    <div class="field-group" style="margin-top:10px">
+                        <label>Access Token</label>
+                        <div class="key-input-row">
+                            <input type="password" id="salesforceAccessToken" class="key-input" placeholder="00D…">
+                            <button class="show-btn" data-target="salesforceAccessToken">👁</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="service-icon">🤖</span>
+                        <div><strong>OpenAI</strong>
+                            <p class="service-desc">AI-powered field classification (optional)</p>
+                        </div>
+                        <a href="https://platform.openai.com/api-keys" target="_blank" class="ext-link">Get key ↗</a>
+                    </div>
+                    <div class="field-group">
+                        <label>API Key</label>
+                        <div class="key-input-row">
+                            <input type="password" id="openaiApiKey" class="key-input"
+                                placeholder="sk-••••••••••••••••">
+                            <button class="show-btn" data-target="openaiApiKey">👁</button>
+                        </div>
+                    </div>
+                    <div class="field-group" style="margin-top:10px">
+                        <label class="toggle-label">
+                            <input type="checkbox" id="enableEnrichment" class="toggle-check">
+                            <span class="toggle-switch"></span>
+                            Enable data enrichment via APIs
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Anti-Detection -->
+            <section class="settings-section" id="section-anti-detect">
+                <h2>Anti-Detection</h2>
+                <p class="section-desc">Configure stealth settings to avoid rate-limiting and bot detection.</p>
+
+                <div class="card">
+                    <div class="field-group">
+                        <label>Request delay between pages (ms)</label>
+                        <input type="number" id="requestDelayMs" class="text-input short" min="500" max="10000"
+                            step="100" placeholder="1500">
+                        <p class="input-hint">Minimum recommended: 1000ms. Higher = more human-like.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="field-group">
+                        <label>Proxy PAC URL</label>
+                        <input type="text" id="proxyPacUrl" class="text-input"
+                            placeholder="http://myproxy.example.com/proxy.pac">
+                        <p class="input-hint">Optional. Configure a PAC URL to route requests through a proxy.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="info-banner">
+                        <span>⚠️</span>
+                        <p>CAPTCHA encounters are flagged on-screen. The extension does not auto-solve CAPTCHAs. Please
+                            solve them manually to continue crawling.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Team -->
+            <section class="settings-section" id="section-team">
+                <h2>Team & Workspace</h2>
+                <p class="section-desc">Manage your workspace name and team members (local only).</p>
+                <div class="card">
+                    <div class="field-group">
+                        <label>Workspace Name</label>
+                        <input type="text" id="teamName" class="text-input" placeholder="My Company">
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="align-items:flex-start">
+                        <div><strong>Team Members</strong>
+                            <p class="service-desc">Define roles for multi-user workspaces.</p>
+                        </div>
+                        <button id="btn-add-member" class="small-btn">+ Add</button>
+                    </div>
+                    <div id="member-list"></div>
+                </div>
+            </section>
+
+            <!-- Privacy -->
+            <section class="settings-section" id="section-privacy">
+                <h2>Privacy & GDPR</h2>
+                <p class="section-desc">Control data handling and comply with GDPR regulations.</p>
+                <div class="card">
+                    <div class="field-group">
+                        <label class="toggle-label">
+                            <input type="checkbox" id="gdprMode" class="toggle-check">
+                            <span class="toggle-switch"></span>
+                            GDPR Mode — strip personally identifiable names from exports
+                        </label>
+                    </div>
+                </div>
+                <div class="card" style="margin-top:12px">
+                    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px">
+                        LeadHarvest Pro processes data locally on your device. No data is sent to external servers
+                        unless you explicitly enable API integrations above.
+                    </p>
+                    <button id="btn-purge-all" class="danger-btn">🗑 Purge All Data (GDPR Right to Erasure)</button>
+                </div>
+            </section>
+
+            <!-- About -->
+            <section class="settings-section" id="section-about">
+                <h2>About</h2>
+                <div class="card about-card">
+                    <img src="../icons/icon128.png" alt="LeadHarvest Pro" class="about-icon">
+                    <h3>LeadHarvest Pro</h3>
+                    <p>Version 1.0.0</p>
+                    <p class="about-desc">An AI-powered, privacy-first lead collection tool for Chrome. All processing
+                        happens locally.</p>
+                    <div class="about-links">
+                        <a href="https://github.com" target="_blank">GitHub</a>
+                        <a href="#" target="_blank">Documentation</a>
+                        <a href="#" target="_blank">Report Issue</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Save Button -->
+            <div class="save-bar">
+                <button id="btn-save" class="save-btn">Save Settings</button>
+            </div>
+        </main>
+    </div>
+    <script type="module" src="options.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LeadHarvest Pro</title>
+  <link rel="stylesheet" href="popup.css">
+  <!-- SheetJS for Excel export -->
+  <script src="../lib/xlsx.min.js"></script>
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-logo">
+      <img src="../icons/icon32.png" alt="Logo" class="logo-img">
+      <div>
+        <span class="header-title">LeadHarvest <span class="accent">Pro</span></span>
+        <span class="header-sub" id="current-domain">—</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button id="btn-open-options" class="icon-btn" title="Settings">⚙</button>
+    </div>
+  </header>
+
+  <!-- Tab Navigation -->
+  <nav class="tab-nav">
+    <button class="tab-btn active" data-tab="extract">
+      <span class="tab-icon">⚡</span> Extract
+    </button>
+    <button class="tab-btn" data-tab="leads">
+      <span class="tab-icon">👥</span> Leads
+      <span class="badge" id="leads-count">0</span>
+    </button>
+    <button class="tab-btn" data-tab="templates">
+      <span class="tab-icon">📋</span> Templates
+    </button>
+    <button class="tab-btn" data-tab="settings">
+      <span class="tab-icon">🔧</span> Tools
+    </button>
+  </nav>
+
+  <!-- ─── Tab: Extract ──────────────────────────────────────────────── -->
+  <section class="tab-content active" id="tab-extract">
+    <!-- Template Selector -->
+    <div class="section-card">
+      <label class="section-label">Active Template</label>
+      <div class="template-selector-row">
+        <select id="template-select" class="select-input">
+          <option value="">— Select a template —</option>
+        </select>
+        <button id="btn-auto-detect" class="icon-btn-sm" title="Auto-detect fields on this page">🔍</button>
+        <button id="btn-auto-detect-ai" class="icon-btn-sm" style="display:none"
+          title="AI-powered auto-detect (more accurate)">✨</button>
+      </div>
+    </div>
+
+    <!-- Training Controls -->
+    <div class="section-card">
+      <label class="section-label">Training</label>
+      <div class="action-row">
+        <button id="btn-start-training" class="action-btn btn-train">
+          <span>🎯</span> Point & Click Train
+        </button>
+        <button id="btn-stop-training" class="action-btn btn-danger hidden">
+          <span>✕</span> Stop Training
+        </button>
+      </div>
+    </div>
+
+    <!-- Extraction Controls -->
+    <div class="section-card">
+      <label class="section-label">Extraction</label>
+      <div class="action-row">
+        <button id="btn-extract" class="action-btn btn-primary">
+          <span>⚡</span> Extract This Page
+        </button>
+        <button id="btn-crawl" class="action-btn btn-secondary">
+          <span>🕷</span> Crawl Pages
+        </button>
+      </div>
+      <!-- Crawl options -->
+      <div class="crawl-options" id="crawl-options" style="display:none">
+        <label class="option-label">Max pages
+          <input type="number" id="max-pages" class="num-input" value="5" min="1" max="50">
+        </label>
+        <button id="btn-start-crawl" class="action-btn btn-primary" style="width:100%;margin-top:8px">
+          <span>🚀</span> Start Crawl
+        </button>
+      </div>
+
+      <!-- Progress -->
+      <div class="progress-area" id="progress-area" style="display:none">
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="progress-bar"></div>
+        </div>
+        <span class="progress-label" id="progress-label">Extracting…</span>
+      </div>
+    </div>
+
+    <!-- Auto-Detected Fields Preview -->
+    <div class="section-card" id="auto-detect-result" style="display:none">
+      <label class="section-label">Detected Fields Preview</label>
+      <div id="auto-detect-list" class="field-preview-list"></div>
+      <button id="btn-save-auto-template" class="action-btn btn-primary" style="margin-top:8px;width:100%">
+        💾 Save as Template
+      </button>
+    </div>
+  </section>
+
+  <section class="tab-content" id="tab-leads">
+    <!-- Search & Toolbar -->
+    <div class="leads-toolbar">
+      <input type="search" id="lead-search" class="search-input" placeholder="Search leads…" />
+      <button id="btn-clean-leads" class="icon-btn-sm" title="Clean & deduplicate leads">✨</button>
+      <button id="btn-select-all" class="icon-btn-sm" title="Select all">☑</button>
+      <button id="btn-delete-selected" class="icon-btn-sm icon-danger" title="Delete selected">🗑</button>
+      <button id="btn-clear-all" class="icon-btn-sm icon-danger" title="Clear all leads">✕</button>
+    </div>
+
+    <!-- Clean Options Panel (hidden by default) -->
+    <div id="clean-panel" style="display:none" class="section-card" style="margin:0 8px 8px">
+      <label class="section-label" style="margin-bottom:8px">✨ Data Cleaning Options</label>
+      <div style="display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--text-secondary,#9ca3af)">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+          <input type="checkbox" id="clean-dedup" checked> Remove duplicate leads (by email / phone+company)
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+          <input type="checkbox" id="clean-thin" checked> Remove thin records (fewer than 2 fields)
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+          <input type="checkbox" id="clean-noid" checked> Remove leads with no identifier (no name/email/company)
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+          <input type="checkbox" id="clean-email" checked> Clear invalid email addresses
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+          <input type="checkbox" id="clean-phone" checked> Clear invalid phone numbers
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+          <input type="checkbox" id="clean-placeholder" checked> Remove placeholder / dummy values
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+          <input type="checkbox" id="clean-normalize" checked> Normalize formatting (trim spaces, lowercase emails)
+        </label>
+      </div>
+      <button id="btn-run-clean" class="action-btn btn-primary" style="width:100%;margin-top:10px">
+        🚀 Run Cleaning
+      </button>
+    </div>
+
+    <!-- Lead Table -->
+    <div class="lead-table-wrap" id="lead-table-wrap">
+      <div class="empty-state" id="leads-empty">
+        <div class="empty-icon">📭</div>
+        <p>No leads yet. Extract data from a page to get started.</p>
+      </div>
+      <table class="lead-table" id="lead-table" style="display:none">
+        <thead id="lead-table-head"></thead>
+        <tbody id="lead-table-body"></tbody>
+      </table>
+    </div>
+
+    <!-- Export Bar -->
+
+    <div class="export-bar">
+      <span class="export-label">Export:</span>
+      <button id="btn-export-csv" class="export-btn">CSV</button>
+      <button id="btn-export-excel" class="export-btn">Excel</button>
+      <button id="btn-export-sheets" class="export-btn">Sheets</button>
+    </div>
+
+    <!-- CRM Push Bar -->
+    <div class="export-bar crm-bar">
+      <span class="export-label">Push to:</span>
+      <button id="btn-push-hubspot" class="export-btn crm-btn">HubSpot</button>
+      <button id="btn-push-salesforce" class="export-btn crm-btn">Salesforce</button>
+      <button id="btn-open-outreach" class="export-btn crm-btn">✉ Outreach</button>
+    </div>
+  </section>
+
+  <!-- ─── Tab: Templates ────────────────────────────────────────────── -->
+  <section class="tab-content" id="tab-templates">
+    <div class="section-header-row">
+      <span class="section-label" style="margin:0">My Templates</span>
+      <div style="display:flex;gap:6px">
+        <button id="btn-marketplace" class="icon-text-btn">🛒 Marketplace</button>
+        <button id="btn-import-template" class="icon-text-btn">⬆ Import</button>
+      </div>
+    </div>
+    <div id="template-list" class="template-list">
+      <div class="empty-state">
+        <div class="empty-icon">📋</div>
+        <p>No templates yet.<br>Use training mode to create one.</p>
+      </div>
+    </div>
+
+    <!-- Template Editor Modal -->
+    <div class="modal-overlay" id="template-editor-overlay" style="display:none">
+      <div class="modal-card">
+        <div class="modal-header">
+          <strong id="modal-title">Edit Template</strong>
+          <button class="modal-close" id="btn-close-modal">✕</button>
+        </div>
+        <div class="modal-body">
+          <label class="field-label">Template Name</label>
+          <input type="text" id="edit-template-name" class="text-input" placeholder="My Template">
+          <label class="field-label" style="margin-top:12px">Fields</label>
+          <div id="edit-field-list"></div>
+          <button id="btn-add-field" class="action-btn btn-secondary" style="width:100%;margin-top:8px">+ Add
+            Field</button>
+        </div>
+        <div class="modal-footer">
+          <button id="btn-save-edit" class="action-btn btn-primary" style="flex:1">Save</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Tab: Tools ────────────────────────────────────────────────── -->
+  <section class="tab-content" id="tab-settings">
+    <div class="tools-grid">
+      <button class="tool-card" id="tool-options">
+        <span class="tool-icon">⚙️</span>
+        <span class="tool-name">API Keys & Settings</span>
+        <span class="tool-desc">Configure enrichment & CRM</span>
+      </button>
+      <button class="tool-card" id="tool-marketplace">
+        <span class="tool-icon">🛒</span>
+        <span class="tool-name">Template Marketplace</span>
+        <span class="tool-desc">Browse community templates</span>
+      </button>
+      <button class="tool-card" id="tool-outreach">
+        <span class="tool-icon">✉️</span>
+        <span class="tool-name">Outreach Assistant</span>
+        <span class="tool-desc">Generate email sequences</span>
+      </button>
+      <button class="tool-card" id="tool-export-all">
+        <span class="tool-icon">📤</span>
+        <span class="tool-name">Export All Leads</span>
+        <span class="tool-desc">CSV / Excel / Google Sheets</span>
+      </button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-card">
+      <div class="stat-item"><span class="stat-val" id="stat-leads">0</span><span class="stat-key">Total Leads</span>
+      </div>
+      <div class="stat-item"><span class="stat-val" id="stat-templates">0</span><span class="stat-key">Templates</span>
+      </div>
+      <div class="stat-item"><span class="stat-val" id="stat-sessions">0</span><span class="stat-key">Sessions</span>
+      </div>
+    </div>
+
+    <!-- Workspace -->
+    <div class="section-card">
+      <label class="section-label">Workspace</label>
+      <div class="workspace-row">
+        <span class="workspace-name" id="workspace-name">My Workspace</span>
+        <span class="workspace-role badge">Owner</span>
+      </div>
+      <button id="btn-gdpr-purge" class="action-btn btn-danger" style="width:100%;margin-top:10px">
+        🗑 GDPR Data Purge
+      </button>
+    </div>
+  </section>
+
+  <script type="module" src="popup.js"></script>
+</body>
+
+</html>

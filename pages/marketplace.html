@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeadHarvest Pro — Template Marketplace</title>
+    <link rel="stylesheet" href="../options/options.css">
+    <style>
+        body {
+            padding: 0;
+        }
+
+        .mp-wrap {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 32px 24px;
+        }
+
+        /* Header */
+        .mp-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .mp-header h1 {
+            font-size: 26px;
+            font-weight: 700;
+        }
+
+        .mp-header h1 span {
+            background: linear-gradient(90deg, #6366f1, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Search row */
+        .mp-search {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .mp-search input {
+            flex: 1;
+            min-width: 180px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .mp-search input:focus {
+            border-color: var(--accent);
+        }
+
+        .filter-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-family: inherit;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .filter-btn.active,
+        .filter-btn:hover {
+            border-color: var(--border-glow);
+            color: var(--accent-light);
+            background: rgba(99, 102, 241, 0.08);
+        }
+
+        /* Grid */
+        .mp-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+            gap: 16px;
+        }
+
+        /* Card */
+        .mp-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: all 0.2s;
+        }
+
+        .mp-card:hover {
+            border-color: var(--border-glow);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.12);
+        }
+
+        /* Card header */
+        .mp-card-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .mp-card-icon {
+            font-size: 28px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .mp-card-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.3;
+        }
+
+        .mp-card-domain {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 3px;
+        }
+
+        /* Description */
+        .mp-card-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.55;
+            flex: 1;
+        }
+
+        /* Field tags */
+        .field-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            min-height: 22px;
+        }
+
+        .field-tag {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .3px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            border-radius: 20px;
+            padding: 3px 8px;
+        }
+
+        /* Card footer — redesigned to avoid wrapping/clipping */
+        .mp-card-footer {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            border-top: 1px solid var(--border);
+            padding-top: 10px;
+            margin-top: 2px;
+        }
+
+        .mp-card-stats {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            color: var(--text-muted);
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+
+        .stars {
+            color: #f59e0b;
+            font-size: 11px;
+            letter-spacing: 1px;
+        }
+
+        .rating-val {
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .stat-sep {
+            color: var(--border);
+        }
+
+        .mp-card-author {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .author-avatar {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            color: white;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .author-name {
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 500;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 100px;
+        }
+
+        /* Install button — full width at bottom */
+        .install-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 9px 0;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity 0.15s;
+            text-align: center;
+        }
+
+        .install-btn:hover {
+            opacity: 0.85;
+        }
+
+        .install-btn.installed {
+            background: rgba(34, 197, 94, 0.1);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .install-btn.installed:hover {
+            opacity: 1;
+            background: rgba(34, 197, 94, 0.15);
+        }
+
+        /* Empty state */
+        .mp-empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+            grid-column: 1/-1;
+        }
+
+        .mp-empty .empty-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #1e1b4b;
+            color: #a5b4fc;
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: 1px solid #4338ca;
+            font-size: 13px;
+            font-weight: 600;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            z-index: 999;
+            transition: opacity 0.3s;
+        }
+
+        .toast.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="mp-wrap">
+        <div class="mp-header">
+            <h1>Template <span>Marketplace</span></h1>
+            <div style="display:flex;gap:10px">
+                <button id="btn-publish" class="filter-btn">⬆ Publish Template</button>
+                <button onclick="window.close()" class="filter-btn">← Back</button>
+            </div>
+        </div>
+
+        <div class="mp-search">
+            <input type="search" id="mp-search" placeholder="Search templates…">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="directory">Directories</button>
+            <button class="filter-btn" data-filter="social">Social</button>
+            <button class="filter-btn" data-filter="ecommerce">E-Commerce</button>
+        </div>
+
+        <div class="mp-grid" id="mp-grid"></div>
+    </div>
+
+    <div class="toast hidden" id="toast"></div>
+    <script type="module" src="marketplace.js"></script>
+</body>
+
+</html>
